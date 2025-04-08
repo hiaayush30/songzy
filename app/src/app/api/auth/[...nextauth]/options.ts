@@ -13,55 +13,42 @@ export const authOptions: NextAuthOptions = {
         maxAge: 20 * 24 * 60 * 60 //30 days
     },
     callbacks: {
-        // async jwt({ token, user, profile }) { //runs once on login to create jwt
-        //     // user here comes from the authorize fn or provided to 
-        //     // us in case of authProviders like google or github
-        //     if (user) {
-        //         token.email = user.email;
-        //         token.id = user.id;
-        //         token.picture = user.image;
-        //         token.name = user.name;
+        async signIn({ user, account, profile }) {
+            //find if the user exists in db else redirect him to signup
+            console.log("user in signIn callback:", user); //need only this
+            // console.log("account in signIn callback:", account);
+            console.log("profile in signIn callback:", profile);
+            // const userInDb = await findUserInDb(profile.email);
 
-        //     }
-        //     else if (profile) {
-        //         const foundUser = await prisma.user.findFirst({
-        //             where: {
-        //                 email: profile.email
-        //             }
-        //         })
-        //         if (foundUser) {
-        //             token.id = foundUser.id;
-        //             token.username = foundUser.username;
-        //             token.email = foundUser.email;
-        //             token.bio = foundUser.bio;
-        //             token.gender = foundUser.gender;
-        //             token.profilePic = foundUser.profilePic;
-        //             token.updatedAt = foundUser.updatedAt;
-        //         }
-        //     }
-        //     return token
-        // },
-        // async session({ session, token }) {
-        //     // This callback modifies the session object that is sent to the 
-        //     // client.
-        //     // Runs every time useSession() or getSession() is called on the
-        //     // client.
-        //     // Uses data from the token (not user, since user data is only
-        //     // available on login).
+            // if (!userInDb) {
+            // Redirect manually using the error page
+            // return '/login?error=UserNotFound';
+            // }
 
-        //     // console.log("token in session:"+token);
-        //     if (token) {
-        //         session.user.id = token.id;
-        //         session.user.username = token.username;
-        //         session.user.bio = token.bio;
-        //         session.user.email = token.email;
-        //         session.user.gender = token.gender;
-        //         session.user.createdAt = token.createdAt;
-        //         session.user.updatedAt = token.updatedAt;
-        //         session.user.profilePic = token.profilePic;
-        //     }
-        //     return session
-        // }
+            return true;
+        },
+        async jwt({ token, user }) { //runs once on login to create jwt
+            console.log("user:", user);
+            console.log("token:", token);
+            //everything is stored in token
+            //add the custom things to the token
+
+
+            return token
+        },
+        async session({ session, token }) {
+            // This callback modifies the session object that is sent to the 
+            // client.
+            // Runs every time useSession() or getSession() is called on the
+            // client.
+
+            //put the things you want to access from the token into the session and return it
+
+            console.log('session:', session);
+            console.log('token in session callback:', token);
+
+            return session
+        }
     },
     pages: {
         error: '/login'  //http://localhost:3000/login?error=username%20or%20password%20incorrect
