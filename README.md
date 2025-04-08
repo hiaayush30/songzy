@@ -1,6 +1,9 @@
 ![alt text](image.png)
 ![alt text](image-1.png)
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+This is a [Next.js](https://nextjs.org) project boots retrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+
+- google o auth redirect url 
+![alt text](image.png)
 
 
 ## Getting Started

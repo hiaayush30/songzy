@@ -1,6 +1,9 @@
-const page = () => {
+import AppBar from "@/components/AppBar"
+
+const page =  () => {
   return (
-    <div>
+    <div className="min-h-screen">
+      <AppBar/>
       Hello There
     </div>
   )
