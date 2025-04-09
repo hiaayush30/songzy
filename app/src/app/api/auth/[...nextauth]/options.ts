@@ -16,10 +16,10 @@ export const authOptions: NextAuthOptions = {
     callbacks: {
         async signIn({ user, account, profile }) {
             //find if the user exists in db else redirect him to signup
-            console.log("user in signIn callback:", user); //need only this
+            // console.log("user in signIn callback:", user); //need only this
             // console.log("account in signIn callback:", account);
-            console.log("profile in signIn callback:", profile);
-            if(!user.email){
+            // console.log("profile in signIn callback:", profile);
+            if (!user.email) {
                 return false;
             }
             try {
@@ -36,8 +36,8 @@ export const authOptions: NextAuthOptions = {
             return true;
         },
         async jwt({ token, user }) { //runs once on login to create jwt
-            console.log("user:", user);
-            console.log("token:", token);
+            // console.log("user:", user);
+            // console.log("token:", token);
             //everything is stored in token
             //add the custom things to the token
 
@@ -52,8 +52,8 @@ export const authOptions: NextAuthOptions = {
 
             //put the things you want to access from the token into the session and return it
 
-            console.log('session:', session);
-            console.log('token in session callback:', token);
+            // console.log('session:', session);
+            // console.log('token in session callback:', token);
 
             return session
         }
