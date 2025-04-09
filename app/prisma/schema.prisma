@@ -25,14 +25,15 @@ enum Provider {
   Google
 }
 
-
 model Stream {
-  id      String     @id @default(cuid())
-  type    StreamType
-  active  Boolean    @default(true)
-  userId  String
-  user    User       @relation(fields: [userId], references: [id])
-  upvotes Upvote[]
+  id          String     @id @default(cuid())
+  type        StreamType
+  url         String
+  extractedId String
+  active      Boolean    @default(true)
+  userId      String
+  user        User       @relation(fields: [userId], references: [id])
+  upvotes     Upvote[]
 }
 
 enum StreamType {
@@ -46,5 +47,6 @@ model Upvote {
   user     User   @relation(fields: [userId], references: [id])
   streamId String
   stream   Stream @relation(fields: [streamId], references: [id])
-  @@unique([userId,streamId])
+
+  @@unique([userId, streamId])
 }

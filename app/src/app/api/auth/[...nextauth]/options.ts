@@ -1,5 +1,6 @@
 import { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
+import prisma from "@/lib/db";
 
 export const authOptions: NextAuthOptions = {
     providers: [
@@ -18,12 +19,19 @@ export const authOptions: NextAuthOptions = {
             console.log("user in signIn callback:", user); //need only this
             // console.log("account in signIn callback:", account);
             console.log("profile in signIn callback:", profile);
-            // const userInDb = await findUserInDb(profile.email);
-
-            // if (!userInDb) {
-            // Redirect manually using the error page
-            // return '/login?error=UserNotFound';
-            // }
+            if(!user.email){
+                return false;
+            }
+            try {
+                await prisma.user.create({
+                    data: {
+                        email: user.email,
+                        provider: "Google",
+                    }
+                })
+            } catch (error) {
+                console.log('error:' + error);
+            }
 
             return true;
         },
