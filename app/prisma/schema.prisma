@@ -27,6 +27,9 @@ enum Provider {
 
 model Stream {
   id          String     @id @default(cuid())
+  title       String
+  smallImg    String
+  bigImg      String
   type        StreamType
   url         String
   extractedId String

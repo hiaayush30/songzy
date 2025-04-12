@@ -3,11 +3,12 @@ import prisma from "@/lib/db";
 import { getServerSession } from "next-auth";
 import { NextRequest } from "next/server";
 
-//@ts-ignore
+//@ts-expect-error no ts declaration file
 import youtubeSearchApi from "youtube-search-api";
 
 const YT_REGEX = /^(?:(?:https?:)?\/\/)?(?:www\.)?(?:m\.)?(?:youtu(?:be)?\.com\/(?:v\/|embed\/|watch(?:\/|\?v=))|youtu\.be\/)((?:\w|-){11})(?:\S+)?$/;
-// const YT_REGEX = new RegExp("^https:\/\/www\.youtube\.com\/watch\?v=([\w-]{11})(&.*)?$")
+
+
 const createStreamSchema = z.object({
     creatorId: z.string(),
     url: z.string().url().refine(
@@ -32,8 +33,15 @@ export const POST = async (req: Request) => {
         const extractedId = data.url.split("?v=")[1];
         const res = await youtubeSearchApi.GetVideoDetails(extractedId);
         console.log("video details:", res)
+
+        const thumbnails = res.thumbnail.thumbnails as Array<{ url: string, height: number, width: number }>;
+        thumbnails.sort((a, b) => a.width < b.width ? -1 : 1);
+
         const stream = await prisma.stream.create({
             data: {
+                title: res.title ?? "404:Video not found",
+                bigImg: thumbnails[thumbnails.length - 1].url ?? "https://images.unsplash.com/photo-1611162616475-46b635cb6868?q=80&w=1548&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                smallImg: (thumbnails.length > 1 ? thumbnails[thumbnails.length - 2].url : thumbnails[thumbnails.length - 1].url) ?? "https://images.unsplash.com/photo-1611162616475-46b635cb6868?q=80&w=1548&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
                 userId: data.creatorId,
                 type: "Youtube",
                 url: data.url,
@@ -43,7 +51,7 @@ export const POST = async (req: Request) => {
 
         return Response.json({
             success: true,
-            stream,
+            streamId:stream.id,
             message: "stream created"
         }, { status: 201 })
 
